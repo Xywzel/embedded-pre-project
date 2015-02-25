@@ -58,11 +58,11 @@ volatile int buttons_ready = 1;
 
 int MIN_PWM = 300;
 int main(void) {
+  uint8_t buttons_down = 0b00000000;
   setup_ddr();
   setup_timer();
   sei();
   LEDS_PORT = 0;
-  uint8_t buttons_down;
 
   for(;;) {
     buttons_down = ~SWITCH_PIN;
@@ -82,7 +82,7 @@ int main(void) {
       case 0b00000100:
 	setup_pwm(MIN_PWM + 30);
 	break;
-      case 0b01001000:
+      case 0b00001000:
 	setup_pwm(MIN_PWM + 40);
 	break;
       case 0b00010000:
