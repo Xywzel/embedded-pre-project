@@ -27,8 +27,7 @@ void setup_ddr(void) {
   SWITCH_DDR = 0x0;
 }
 
-void setup_timer(void)
-{
+void setup_timer(void) {
   // TCCR1B Timer/Counter 1 control register B
   TCCR1B |= (1 << WGM12); // use hw timer comparison
   // TIMSK1 Timer/Counter 1 Interrupt Mask Register
@@ -44,15 +43,14 @@ void setup_timer(void)
 uint8_t toggle_leds(uint8_t);
 uint8_t check_switch_state();
 
-int main(void)
-{
+int main(void) {
   setup_ddr();
   setup_timer();
   LEDS_PORT = 0;
 
-  for(;;)
-  {
-
+  for(;;) {
+    if (pressed) {
+    } else {}
   }
 }
 
