@@ -47,6 +47,7 @@ volatile int buttons_ready = 1;
 int main(void) {
   setup_ddr();
   LEDS_PORT = 0;
+  int btn_pressed = 0xff;
 
   for(;;) {
     if (buttons_ready) {
