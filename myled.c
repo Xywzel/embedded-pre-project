@@ -27,6 +27,10 @@ void setup_ddr(void) {
   SWITCH_DDR = 0x0;
 }
 
+void reset_timer(void) {
+  TCNT1 = 0;
+}
+
 void setup_timer(void) {
   // TCCR1B Timer/Counter 1 control register B
   TCCR1B |= (1 << WGM12); // use hw timer comparison
@@ -46,15 +50,16 @@ volatile int buttons_ready = 1;
 
 int main(void) {
   setup_ddr();
+  setup_timer();
   LEDS_PORT = 0;
-  int btn_pressed = 0xff;
+  int btn_pressed;
 
   for(;;) {
     if (buttons_ready) {
-      btn_pressed = ~SWITCH_PORT;
-      LEDS_PORT = btn_pressed;
       buttons_ready = 0;
-      setup_timer();
+      btn_pressed = ~SWITCH_PIN;
+      LEDS_PORT |= btn_pressed;
+      reset_timer();
     } else {
     }
   }
@@ -64,9 +69,13 @@ uint8_t check_switch_state() {
   uint8_t state = SWITCH_PORT;
   return state;
 }
-
+volatile int count = 0;
 // Setting TIMSK1 to what it is sets a listener for TIMER1_COMPA_vect
 ISR(TIMER1_COMPA_vect) {
-  LEDS_PORT = 0b00011000;
+  if (count++ > 10) {
+    count = 0;
+  LEDS_PORT = 0b00000001;
+  buttons_ready = 1;
   // TODO: this is called when the the timer counter hits the value 49999
+  }
 }
