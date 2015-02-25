@@ -55,12 +55,12 @@ int main(void) {
   int btn_pressed;
 
   for(;;) {
-    if (buttons_ready) {
+    buttons_down = ~SWITCH_PIN;
+
+    if (buttons_ready && buttons_down > 0) {
       buttons_ready = 0;
-      btn_pressed = ~SWITCH_PIN;
-      LEDS_PORT |= btn_pressed;
+      LEDS_PORT = buttons_down;
       reset_timer();
-    } else {
     }
   }
 }
@@ -69,13 +69,10 @@ uint8_t check_switch_state() {
   uint8_t state = SWITCH_PORT;
   return state;
 }
-volatile int count = 0;
+
 // Setting TIMSK1 to what it is sets a listener for TIMER1_COMPA_vect
 ISR(TIMER1_COMPA_vect) {
-  if (count++ > 10) {
-    count = 0;
-  LEDS_PORT = 0b00000001;
+  LEDS_PORT = 0b00000000;
   buttons_ready = 1;
   // TODO: this is called when the the timer counter hits the value 49999
-  }
 }
