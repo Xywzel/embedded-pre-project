@@ -40,22 +40,23 @@ void setup_timer(void) {
   TCCR1B |= ((1 << CS10) | (1 << CS11)); // timer 1 control register B w prescaler
 }
 
-uint8_t toggle_leds(uint8_t);
 uint8_t check_switch_state();
+
+volatile int buttons_ready = 1;
 
 int main(void) {
   setup_ddr();
-  setup_timer();
   LEDS_PORT = 0;
 
   for(;;) {
-    if (pressed) {
-    } else {}
+    if (buttons_ready) {
+      btn_pressed = ~SWITCH_PORT;
+      LEDS_PORT = btn_pressed;
+      buttons_ready = 0;
+      setup_timer();
+    } else {
+    }
   }
-}
-
-uint8_t toggle_leds(uint8_t state) {
-  return state;
 }
 
 uint8_t check_switch_state() {
@@ -65,5 +66,6 @@ uint8_t check_switch_state() {
 
 // Setting TIMSK1 to what it is sets a listener for TIMER1_COMPA_vect
 ISR(TIMER1_COMPA_vect) {
+  LEDS_PORT = 0b00011000;
   // TODO: this is called when the the timer counter hits the value 49999
 }
