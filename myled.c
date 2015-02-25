@@ -43,15 +43,20 @@ void setup_timer(void) {
   TCCR2B |= ((1 << CS20) | (1 << CS21)); // timer 1 control register B w prescaler
 }
 
-void setup_pwn(void) {
-  TCCR1A = (1 << WGM10) | (1 << COM1A1);
-  TCCR1B = (1 << CS10)  | (1 << WGM12);
+void setup_pwm(int val) {
+  DDRB = 0xff;
+  TCCR1A |= (1 << COM1A0) | (1 << COM1A1) | (1 << WGM11);
+  TCCR1B |= (1 << WGM12) | (1 << WGM13) | (1 << CS10) | (1 << CS11);
+  ICR1 = 4999;
+  OCR1A = ICR1 - val;
+  
 }
 
 uint8_t check_switch_state();
 
 volatile int buttons_ready = 1;
 
+int MIN_PWM = 300;
 int main(void) {
   setup_ddr();
   setup_timer();
@@ -69,20 +74,28 @@ int main(void) {
       
       switch (buttons_down) {
       case 0b00000001:
-	OCR1A = 
+	setup_pwm(MIN_PWM + 10);
+	break;
       case 0b00000010:
+	setup_pwm(MIN_PWM + 20);
 	break;
       case 0b00000100:
+	setup_pwm(MIN_PWM + 30);
 	break;
       case 0b01001000:
+	setup_pwm(MIN_PWM + 40);
 	break;
       case 0b00010000:
+	setup_pwm(MIN_PWM + 50);
 	break;
       case 0b00100000:
+	setup_pwm(MIN_PWM + 60);
 	break;
       case 0b01000000:
+	setup_pwm(MIN_PWM + 70);
 	break;
       case 0b10000000:
+	setup_pwm(MIN_PWM + 80);
 	break;
       default:
 	buttons_ready = 1;
@@ -105,6 +118,7 @@ ISR(TIMER2_COMPA_vect) {
     timer_counter = 0;
     LEDS_PORT = 0b00000000;
     buttons_ready = 1;
+    TCCR1A &= ~_BV(COM1A1); // reset the pwm signal
     // TODO: this is called when the the timer counter hits the value 49999
   }
 }
