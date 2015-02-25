@@ -1,11 +1,7 @@
+
 #include <inttypes.h> /* definitions for uint8_t and others */
 #include <avr/io.h>   /* definitions for all PORT* and other registers. You absolutely will need this one */
 #include <avr/interrupt.h>
-
-/* Needed only when the _delay_ms is used
- * TODO: delete when no need for _delay_ms
- */
-#include <util/delay.h>
 
 #define LEDS_PORT PORTC
 #define LEDS_DDR  DDRC
@@ -33,14 +29,13 @@ void reset_timer(void) {
 
 void setup_timer(void) {
   // TCCR1B Timer/Counter 1 control register B
-  TCCR2B |= (1 << WGM22); // use hw timer comparison
+  TCCR2B |= (1 << WGM22) | (1 << CS20) | (1 << CS21) | (1 << CS22); // use hw timer comparison
   // TIMSK1 Timer/Counter 1 Interrupt Mask Register
   // TIMER1_COMPA
   TIMSK2 |= (1 << OCIE2A);  // enable ctc interrupt
   // http://www.gnu.org/savannah-checkouts/non-gnu/avr-libc/user-manual/group__avr__interrupts.html#ogaad5ebd34cb344c26ac87594f79b06b73
   // Define the address for the comparison value
   OCR2A = 254;
-  TCCR2B |= ((1 << CS20) | (1 << CS21)); // timer 1 control register B w prescaler
 }
 
 void setup_pwm(int val) {
@@ -49,7 +44,10 @@ void setup_pwm(int val) {
   TCCR1B |= (1 << WGM12) | (1 << WGM13) | (1 << CS10) | (1 << CS11);
   ICR1 = 4999;
   OCR1A = ICR1 - val;
-  
+}
+
+void disable_pwm() {
+  TCCR1A &= ~_BV(COM1A1); // reset the pwm signal
 }
 
 uint8_t check_switch_state();
@@ -110,7 +108,7 @@ uint8_t check_switch_state() {
   return state;
 }
 
-int LOOP_COUNT = 6500;
+int LOOP_COUNT = 250;
 volatile int timer_counter = 0;
 // Setting TIMSK1 to what it is sets a listener for TIMER1_COMPA_vect
 ISR(TIMER2_COMPA_vect) {
@@ -118,7 +116,7 @@ ISR(TIMER2_COMPA_vect) {
     timer_counter = 0;
     LEDS_PORT = 0b00000000;
     buttons_ready = 1;
-    TCCR1A &= ~_BV(COM1A1); // reset the pwm signal
+    disable_pwm();
     // TODO: this is called when the the timer counter hits the value 49999
   }
 }
