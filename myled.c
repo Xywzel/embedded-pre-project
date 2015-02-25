@@ -1,5 +1,6 @@
 #include <inttypes.h> /* definitions for uint8_t and others */
 #include <avr/io.h>   /* definitions for all PORT* and other registers. You absolutely will need this one */
+#include <avr/interrupt.h>
 
 /* Needed only when the _delay_ms is used
  * TODO: delete when no need for _delay_ms
