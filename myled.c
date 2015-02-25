@@ -69,7 +69,7 @@ int main(void) {
       
       switch (buttons_down) {
       case 0b00000001:
-	break;
+	OCR1A = 
       case 0b00000010:
 	break;
       case 0b00000100:
