@@ -28,7 +28,7 @@ void setup_ddr(void) {
 }
 
 void reset_timer(void) {
-  TCNT1 = 0;
+  TCNT2 = 0;
 }
 
 void setup_timer(void) {
@@ -38,10 +38,14 @@ void setup_timer(void) {
   // TIMER1_COMPA
   TIMSK2 |= (1 << OCIE2A);  // enable ctc interrupt
   // http://www.gnu.org/savannah-checkouts/non-gnu/avr-libc/user-manual/group__avr__interrupts.html#ogaad5ebd34cb344c26ac87594f79b06b73
-  sei();
   // Define the address for the comparison value
-  OCR2A = 120;
+  OCR2A = 254;
   TCCR2B |= ((1 << CS20) | (1 << CS21)); // timer 1 control register B w prescaler
+}
+
+void setup_pwn(void) {
+  TCCR1A = (1 << WGM10) | (1 << COM1A1);
+  TCCR1B = (1 << CS10)  | (1 << WGM12);
 }
 
 uint8_t check_switch_state();
@@ -51,16 +55,39 @@ volatile int buttons_ready = 1;
 int main(void) {
   setup_ddr();
   setup_timer();
+  sei();
   LEDS_PORT = 0;
-  int buttons_down;
+  uint8_t buttons_down;
 
   for(;;) {
     buttons_down = ~SWITCH_PIN;
 
-    if (buttons_ready && buttons_down > 0) {
-      buttons_ready = 0;
-      LEDS_PORT = buttons_down;
+    if (buttons_ready > 0 && buttons_down > 0) {
+      buttons_ready = -1;
+      LEDS_PORT |= buttons_down;
       reset_timer();
+      
+      switch (buttons_down) {
+      case 0b00000001:
+	break;
+      case 0b00000010:
+	break;
+      case 0b00000100:
+	break;
+      case 0b01001000:
+	break;
+      case 0b00010000:
+	break;
+      case 0b00100000:
+	break;
+      case 0b01000000:
+	break;
+      case 0b10000000:
+	break;
+      default:
+	buttons_ready = 1;
+	LEDS_PORT = 0;
+      }
     }
   }
 }
@@ -70,9 +97,14 @@ uint8_t check_switch_state() {
   return state;
 }
 
+int LOOP_COUNT = 6500;
+volatile int timer_counter = 0;
 // Setting TIMSK1 to what it is sets a listener for TIMER1_COMPA_vect
 ISR(TIMER2_COMPA_vect) {
-  LEDS_PORT = 0b00000000;
-  buttons_ready = 1;
-  // TODO: this is called when the the timer counter hits the value 49999
+  if (timer_counter++ > LOOP_COUNT) {
+    timer_counter = 0;
+    LEDS_PORT = 0b00000000;
+    buttons_ready = 1;
+    // TODO: this is called when the the timer counter hits the value 49999
+  }
 }
