@@ -49,7 +49,6 @@ void setup_pwm(int val) {
   TCCR1B |= (1 << WGM12) | (1 << WGM13) | (1 << CS10) | (1 << CS11);
   ICR1 = 4999;
   OCR1A = ICR1 - val;
-  
 }
 
 uint8_t check_switch_state();
