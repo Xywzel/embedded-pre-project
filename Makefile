@@ -1,10 +1,10 @@
 # Target filename
 #   All output files will start with this (TARGET.elf, TARGET.hex, etc.)
 #   You can select this for your liking. Remember to run `make clean` before changing this value.
-TARGET := simpleled
+TARGET := demo
 
 # List of source files to be build (seperated by space)
-SRC := myled.c
+SRC := demo.c
 
 # On this course we will use arduino mega boards, so there is no need to change this
 BOARD := arduino_mega2560

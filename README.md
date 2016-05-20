@@ -1,35 +1,13 @@
-An example to get you started with pre-project
-==============================================
-
-This repository is for you to get started. Refer noppa and course wiki (link in noppa) for more information what to do. These files are related to development environment on Linux.
-
-
-Git
----
-
-Git is suggested to be used for project management. It helps you to share code on car-project state and also keeps history of code versions. Remember to tag or branch working version of your code, so when you try to demo on last day, you know which version did work.
-
-You can click `Fork` on [home page](/t-106-5300/example) to fork this project and use this gitlab as git remote. Alternatively you can press [Download](/t-106-5300/example/repository/archive) to get a copy of these files.
-
-For more help with git, use the google...
-
+This is preproject demonstration for embedded systems
+=====================================================
 
 Requirements
 ------------
-
-All these development tool requirements are fulfilled in exercise lab, so you can skip this part if you are working there.
-
-On Windows you need to refer the course wiki for help. Course assistance do not provide any help with Windows tools or development environments. Actual coding on Windows is similar, thus help is provided for that.
-
-With Linux based systems following packages are needed:
-
-debian & ubuntu | description
---- | ---
+Following packages are needed in unix eniviroment to use this project.
 gcc-avr | Compiler and other utilities
 avr-libc | C libraries
 avrdude | Used to program the AVR device
-yaamake | Required to use `Makefile` (read more below). Packages for yaamake are not yet in distribution repositories so get it from [github source](https://github.com/raphendyr/yaamake)
-
+yaamake | Required to use projects `Makefile`. Packages for yaamake are in [github source](https://github.com/raphendyr/yaamake)
 
 Files
 -----
@@ -42,7 +20,7 @@ This file contains files to be ignored by git. These files contain build result 
 
 `Makefile` contains definitions and rules for the `make` program. This project uses `yaamake` to do all the heavy lifting so the `Makefile` is quite sort. More information and configuration variables can be viewed with `make help`.
 
-When you change the `simpleled.c` filename to something else or add another source file, you need to edit `SRC` line in this file.
+When you change the `demo.c` filename to something else or add another source file, you need to edit `SRC` line in this file.
 
 ### Makefile.alternative
 
@@ -50,10 +28,9 @@ This is an alternative makefile that can be used without yaamake. If you want to
 
 You can use this makefile if you don't want to or can't use yaamake.
 
-### simpleled.c
+### demo.c
 
-This is the example source file that demonstrates some basic things. This is far from a complete solution for the pre-project, but works for testing the development environment.
-
+This contains most of the source code for the pre-project.
 
 Yaamake makefile usage
 ----------------------
